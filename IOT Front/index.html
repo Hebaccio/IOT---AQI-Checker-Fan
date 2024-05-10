@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="3">
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <title>Document</title>
+</head>
+<body>
+
+  <div class="main-container">
+    <div class="line-container">
+      <h1 id="main-text">Air quality index: </h1>
+      <h1 id="broj"></h1>
+    </div>
+    <div class="gap"></div>
+    <div class="line-container">
+      <h1 id="main-text2">Start the fan: </h1>
+      <button id="on">ON</button>
+      <button id="off">OFF</button>
+    </div>
+  </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  import {getDatabase, ref, set, get, child, update, remove} 
+  from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6fc_YTYAbCvYKj4QJQAjDiFtMC8srh1k",
+    authDomain: "gas-sensor-iot-42b82.firebaseapp.com",
+    databaseURL: "https://gas-sensor-iot-42b82-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "gas-sensor-iot-42b82",
+    storageBucket: "gas-sensor-iot-42b82.appspot.com",
+    messagingSenderId: "44137922545",
+    appId: "1:44137922545:web:a8a3ae210e1b91f0bd4e50",
+    measurementId: "G-40P8GSGSMJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+        const db=getDatabase();
+        const bigOne = document.getElementById('broj');
+        const ON = document.getElementById('on');
+        const OFF = document.getElementById('off');
+
+        function Load(){ 
+          const dbRef = ref(db);
+          
+          get(child(dbRef, "Sensor/"))
+          .then((snapshot) => {
+            if(snapshot.exists()){
+              bigOne.innerText = snapshot.val().Data;
+            } else {
+              console.log("No data available");
+            }
+          })
+          .catch((error) => {
+              console.error(error);
+            });
+        }
+
+        function DugmeOn(){
+          update(ref(db, "Sensor/"),
+          {
+            Manuelno:true,
+          });
+        }
+        ON.addEventListener("click", DugmeOn);
+
+        function DugmeOff(){
+          update(ref(db, "Sensor/"),
+          {
+            Manuelno:false,
+          });
+        } 
+        OFF.addEventListener("click", DugmeOff);
+
+
+        Load();
+
+      </script>
+
+</body>
+</html>
